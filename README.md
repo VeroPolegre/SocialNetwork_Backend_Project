@@ -98,11 +98,11 @@ Comments:
     - 
 
 
-# <h2 align="center"><samp>  Working with branches 🖥️  </samp></h2>
+# <h2><samp>👥 Working with branches </samp></h2>
 
 This project proved to be highly beneficial as it provided valuable insights into branch management and GitHub commands. Overcoming the occasional conflicts was a learning experience, and witnessing the project function seamlessly according to our initial vision was particularly gratifying.
 
-## 🤝 Contributing
+## <h2><samp>🤝 Contributing </samp></h2>
 
 Your contributions are sincerely valued. If you have any suggestions to improve it, please consider forking the repository and initiating a pull request. Alternatively, you can easily open an issue labeled "enhancement." And, remember to show your support for the project by giving it a star! Thank you!
 
@@ -113,11 +113,11 @@ Your contributions are sincerely valued. If you have any suggestions to improve 
 5. Open a Pull Request
 
 
-## 🖊️ License
+## <h2><samp>🖊️ License </samp></h2>
 
 This project is under license of [Demis Previotto](https://github.com/demispreviotto) & [Vero Polegre](https://github.com/VeroPolegre)
 
-### ⭐️ How to reach us!
+### <h2><samp>⭐️ How to reach us! </samp></h2>
 Demis Previotto
 
 <a href="https://www.linkedin.com/in/demispreviotto/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a>
