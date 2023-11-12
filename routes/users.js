@@ -8,6 +8,7 @@ const {
 } = require("../middleware/authentication");
 
 router.post("/register", UserController.create);
+router.post("/updatebyid/:_id", UserController.updateByID);
 router.post("/login", UserController.login);
 router.get("/profile", authentication, UserController.getLoggedUsers);
 router.delete("/logout", authentication, UserController.logout);
