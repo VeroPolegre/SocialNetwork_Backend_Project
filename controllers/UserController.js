@@ -45,7 +45,7 @@ const UserController = {
     }
   },
 
-  async getLoggedUsers(req, res) {
+  async getLoggedUser(req, res) {
     try {
       const loggedUser = await User.findById({ _id: req.user._id });
       res.status(200).send(loggedUser);
