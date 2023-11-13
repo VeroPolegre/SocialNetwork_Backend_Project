@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Please, enter an email"],
+      match: [/.+\@.+\..+/, "Enter a valid email"],
       unique: true,
       trim: true,
     },

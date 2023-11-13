@@ -6,13 +6,10 @@ const { jwt_secret } = require("../config/keys");
 const UserController = {
   async create(req, res, next) {
     try {
-      const { username, email, password } = req.body;
-      if (!username || !email || !password) {
-        return res
-          .status(400)
-          .send({ msg: "Username, email and password are required." });
+      let hash = "";
+      if (req.body.password) {
+        hash = bcrypt.hashSync(req.body.password, 10);
       }
-      const hash = bcrypt.hashSync(req.body.password, 10);
       const user = await User.create({
         ...req.body,
         password: hash,
@@ -21,11 +18,12 @@ const UserController = {
       });
       res.status(201).send({ msg: "User created successfully.", user });
     } catch (error) {
-      if (error.name === "ValidationError") {
-        return res.status(400).send({ error: error.message });
-      }
-      console.error("error creating a user", error);
-      res.status(500).send({ message: "Server error creating a user" });
+      // if (error.name === "ValidationError") {
+      //   return res.status(400).send({ error: error.message });
+      // }
+      // console.error("error creating a user", error);
+      // res.status(500).send({ message: "Server error creating a user" });
+      next(error);
     }
   },
 
