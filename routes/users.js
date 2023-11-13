@@ -9,7 +9,7 @@ const {
 
 router.post("/register", UserController.create);
 router.post("/login", UserController.login);
-router.post("/updatebyid/:_id", UserController.updateByID);
+router.post("/id/:_id", UserController.updateByID);
 router.get("/profile", authentication, UserController.getLoggedUser);
 router.delete("/logout", authentication, UserController.logout);
 
