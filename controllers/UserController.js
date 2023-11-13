@@ -45,6 +45,21 @@ const UserController = {
     }
   },
 
+  async updateByID(req, res) {
+    try {
+      // if (!user._id) return res.status(400).send({ msg: 'Primero debe registrarse como usuario' })
+      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body, {
+        new: true,
+      });
+      res
+        .status(200)
+        .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  },
+
   async getLoggedUser(req, res) {
     try {
       const loggedUser = await User.findById({ _id: req.user._id });
@@ -67,20 +82,6 @@ const UserController = {
         msg: `Error while trying to disconnect the current user`,
         error,
       });
-    }
-  },
-  async updateByID(req, res) {
-    try {
-      // if (!user._id) return res.status(400).send({ msg: 'Primero debe registrarse como usuario' })
-      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body, {
-        new: true,
-      });
-      res
-        .status(200)
-        .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });
-    } catch (error) {
-      console.error(error);
-      next(error);
     }
   },
 };
