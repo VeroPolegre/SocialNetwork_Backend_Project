@@ -78,15 +78,20 @@ const PostController = {
       const foundPost = await Post.findById(req.params._id);
       if (!foundPost)
         return res.status(400).send({ message: "Post not found" });
-      const post = await Post.findByIdAndUpdate(
-        req.params._id,
-        { $push: { likes: req.user._id } },
-        { new: true }
-      );
-      res.send(post);
+
+      const userId = req.user._id;
+      const alreadyLiked = foundPost.likes.includes(userId);
+
+      if (alreadyLiked) {
+        foundPost.likes.pull(userId);
+      } else {
+        foundPost.likes.push(userId);
+      }
+      const updatedPost = await foundPost.save();
+      res.send(updatedPost);
     } catch (error) {
       console.error(error);
-      res.status(500).send({ message: "There was a problem with your like" });
+      res.status(500).send({ message: "There was a problem liking the post" });
     }
   },
 };
