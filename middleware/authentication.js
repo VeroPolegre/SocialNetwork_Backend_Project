@@ -5,7 +5,7 @@ const Post = require("../models/Post");
 
 const authentication = async (req, res, next) => {
   try {
-    const token = req.headers.authroization;
+    const token = req.headers.authorization;
     const payload = jwt.verify(token, jwt_secret);
     const user = await User.findOne({ _id: payload._id, tokens: token });
     if (!user) {

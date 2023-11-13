@@ -18,11 +18,6 @@ const UserController = {
       });
       res.status(201).send({ msg: "User created successfully.", user });
     } catch (error) {
-      // if (error.name === "ValidationError") {
-      //   return res.status(400).send({ error: error.message });
-      // }
-      // console.error("error creating a user", error);
-      // res.status(500).send({ message: "Server error creating a user" });
       next(error);
     }
   },
@@ -34,7 +29,7 @@ const UserController = {
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
-      return res.status(200).send({ msg: `Welcome ${user.name}`, token });
+      return res.status(200).send({ msg: `Welcome ${user.username}`, token });
     } catch (error) {
       console.log(error);
       res
@@ -45,7 +40,8 @@ const UserController = {
 
   async updateByID(req, res) {
     try {
-      // if (!user._id) return res.status(400).send({ msg: 'Primero debe registrarse como usuario' })
+      if (!req.user._id)
+        return res.status(400).send({ msg: "Register user first" });
       const foundUser = await User.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
@@ -54,7 +50,7 @@ const UserController = {
         .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });
     } catch (error) {
       console.error(error);
-      next(error);
+      res.status(500).send(error);
     }
   },
 

@@ -1,7 +1,7 @@
 const Post = require("../models/Post");
 
 const PostController = {
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const post = await Post.create({
         ...req.body,
@@ -10,8 +10,7 @@ const PostController = {
       res.status(201).send(post);
     } catch (error) {
       console.error(error);
-
-      res.status(500).send({ message: "Error creating a post" });
+      next(error);
     }
   },
 
@@ -71,6 +70,23 @@ const PostController = {
       res.send({ message: "Post updated successfully!", post });
     } catch (error) {
       console.error(error);
+    }
+  },
+
+  async like(req, res) {
+    try {
+      const foundPost = await Post.findById(req.params._id);
+      if (!foundPost)
+        return res.status(400).send({ message: "Post not found" });
+      const post = await Post.findByIdAndUpdate(
+        req.params._id,
+        { $push: { likes: req.user._id } },
+        { new: true }
+      );
+      res.send(post);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "There was a problem with your like" });
     }
   },
 };
