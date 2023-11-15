@@ -22,11 +22,13 @@ const CommentController = {
 
   async delete(req, res) {
     try {
-      const a = Comment.findById(req.params._id);
-      console.log(a);
-      const b = await Post.findById({ commentIds: req.params._id });
-      //  await Post.findByIdAndDelete({ commentIds: req.params._id });
-      console.warn(`Hallo`, b);
+      await Comment.findByIdAndDelete(req.params._id);
+
+      await Post.findOneAndUpdate(
+        { commentIds: req.params._id },
+        { $pull: { commentIds: req.params._id } },
+        { new: true }
+      );
       res.status(200).send({ message: "Comment deleted succesfully." });
     } catch (error) {
       console.error(error);
