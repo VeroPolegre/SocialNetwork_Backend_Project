@@ -85,19 +85,44 @@ const UserController = {
       if (loggedUser.following.includes(userToFollow._id)) {
         res.status(400).send({ msg: `already following ${userToFollow.username}` })
       } else {
-        await User.findByIdAndUpdate(req.user._id, {
-          $push: { following: req.params._id },
-        });
-        await User.findByIdAndUpdate(req.params._id, {
-          $push: { followers: req.user._id },
-        });
+        await User.findByIdAndUpdate(req.user._id,
+          { $push: { following: req.params._id } },
+          { new: true }
+        );
+        await User.findByIdAndUpdate(req.params._id,
+          { $push: { followers: req.user._id } },
+          { new: true }
+        );
         res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
       }
     } catch (error) {
       console.error(error);
       next(error)
     }
-  }
+  },
+  async unFollow(req, res, next) {
+    try {
+      const loggedUser = await User.findById({ _id: req.user._id });
+      const userToFollow = await User.findById({ _id: req.params._id });
+      if (!loggedUser.following.includes(userToFollow._id)) {
+        res.status(400).send({ msg: `not following ${userToFollow.username}` })
+      } else {
+        await User.findByIdAndUpdate(req.user._id,
+          { $pull: { following: req.params._id } },
+          { new: true }
+        );
+        await User.findByIdAndUpdate(req.params._id, {
+          $pull: { followers: req.user._id }
+        },
+          { new: true }
+        );
+        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
+      }
+    } catch (error) {
+      console.error(error);
+      next(error)
+    }
+  },
 };
 
 module.exports = UserController;
