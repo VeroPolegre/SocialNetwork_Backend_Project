@@ -78,19 +78,20 @@ const UserController = {
       });
     }
   },
+
   async follow(req, res, next) {
     try {
-      const loggedUser = await User.findById({ _id: req.user._id });
-      const userToFollow = await User.findById({ _id: req.params._id });
+      let loggedUser = await User.findById({ _id: req.user._id });
+      let userToFollow = await User.findById({ _id: req.params._id });
       if (loggedUser.following.includes(userToFollow._id)) {
         res.status(400).send({ msg: `already following ${userToFollow.username}` })
       } else {
-        await User.findByIdAndUpdate(
+        loggedUser = await User.findByIdAndUpdate(
           req.user._id,
           { $push: { following: req.params._id } },
           { new: true }
         );
-        await User.findByIdAndUpdate(
+        userToFollow = await User.findByIdAndUpdate(
           req.params._id,
           { $push: { followers: req.user._id } },
           { new: true }
@@ -102,30 +103,59 @@ const UserController = {
       next(error)
     }
   },
+
   async unFollow(req, res, next) {
     try {
-      const loggedUser = await User.findById({ _id: req.user._id });
-      const userToFollow = await User.findById({ _id: req.params._id });
-      if (!loggedUser.following.includes(userToFollow._id)) {
-        res.status(400).send({ msg: `not following ${userToFollow.username}` })
+      let loggedUser = await User.findById({ _id: req.user._id });
+      let userToUnfollow = await User.findById({ _id: req.params._id });
+      if (!loggedUser.following.includes(userToUnfollow._id)) {
+        res.status(400).send({ msg: `You're not following ${userToUnfollow.username}` })
       } else {
-        await User.findByIdAndUpdate(
+        loggedUser = await User.findByIdAndUpdate(
           req.user._id,
           { $pull: { following: req.params._id } },
           { new: true }
         );
-        await User.findByIdAndUpdate(
+        userToUnfollow = await User.findByIdAndUpdate(
           req.params._id,
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
+        res.status(200).send({ msg: `${loggedUser.username} is now unfollowing ${userToUnfollow.username}`, loggedUser, userToUnfollow });
       }
     } catch (error) {
       console.error(error);
       next(error)
     }
   },
+  async getById(req, res, next) {
+    try {
+      const foundUser = await User.findById({ _id: req.params._id });
+      if (!foundUser) {
+        return res.status(400).send({ msg: `ID: ${req.params._id} not found` })
+      } else {
+        return res.status(200).send(foundUser);
+      }
+    } catch (error) {
+      console.error(error);
+      next(error)
+    }
+  },
+  async getByName(req, res, next) {
+    try {
+      const username = new RegExp(req.params.username, "i");
+      const foundUser = await User.find({ username });
+      if (!foundUser) {
+        return res.status(400).send({ msg: `${req.params.username} not found` })
+      } else {
+        return res.status(200).send(foundUser);
+      }
+    } catch (error) {
+      console.error(error);
+      next(error)
+    }
+  },
+
 };
 
 module.exports = UserController;
