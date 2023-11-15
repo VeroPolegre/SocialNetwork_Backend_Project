@@ -84,7 +84,9 @@ const UserController = {
       let loggedUser = await User.findById({ _id: req.user._id });
       let userToFollow = await User.findById({ _id: req.params._id });
       if (loggedUser.following.includes(userToFollow._id)) {
-        res.status(400).send({ msg: `already following ${userToFollow.username}` })
+        res
+          .status(400)
+          .send({ msg: `already following ${userToFollow.username}` });
       } else {
         loggedUser = await User.findByIdAndUpdate(
           req.user._id,
@@ -96,11 +98,17 @@ const UserController = {
           { $push: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
+        res
+          .status(200)
+          .send({
+            msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+            loggedUser,
+            userToFollow,
+          });
       }
     } catch (error) {
       console.error(error);
-      next(error)
+      next(error);
     }
   },
 
@@ -109,7 +117,7 @@ const UserController = {
       let loggedUser = await User.findById({ _id: req.user._id });
       let userToUnfollow = await User.findById({ _id: req.params._id });
       if (!loggedUser.following.includes(userToUnfollow._id)) {
-        res.status(400).send({ msg: `You're not following ${userToUnfollow.username}` })
+        res.status(400).send({ msg: `You're not following ${userToUnfollow.username}` });
       } else {
         loggedUser = await User.findByIdAndUpdate(
           req.user._id,
@@ -121,38 +129,11 @@ const UserController = {
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now unfollowing ${userToUnfollow.username}`, loggedUser, userToUnfollow });
+        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
       }
     } catch (error) {
       console.error(error);
-      next(error)
-    }
-  },
-  async getById(req, res, next) {
-    try {
-      const foundUser = await User.findById({ _id: req.params._id });
-      if (!foundUser) {
-        return res.status(400).send({ msg: `ID: ${req.params._id} not found` })
-      } else {
-        return res.status(200).send(foundUser);
-      }
-    } catch (error) {
-      console.error(error);
-      next(error)
-    }
-  },
-  async getByName(req, res, next) {
-    try {
-      const username = new RegExp(req.params.username, "i");
-      const foundUser = await User.find({ username });
-      if (!foundUser) {
-        return res.status(400).send({ msg: `${req.params.username} not found` })
-      } else {
-        return res.status(200).send(foundUser);
-      }
-    } catch (error) {
-      console.error(error);
-      next(error)
+      next(error);
     }
   },
 

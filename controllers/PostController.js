@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const Comment = require("../models/Comment");
 
 const PostController = {
   async create(req, res, next) {
@@ -8,6 +9,13 @@ const PostController = {
         ...req.body,
         userId: req.user._id,
       });
+
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { postIds: post._id } },
+        { new: true }
+      );
+
       res.status(201).send(post);
     } catch (error) {
       console.error(error);
@@ -15,22 +23,33 @@ const PostController = {
     }
   },
 
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
       const { page = 1, limit = 10 } = req.query;
-      const posts = await Post.find()
+      const posts = await Post.find({})
+        .populate({
+          path: "userId",
+          select: "username",
+        })
+        .populate({
+          path: "commentIds",
+          populate: {
+            path: "userId",
+            select: "username",
+          },
+        })
         .limit(limit)
         .skip((page - 1) * limit);
-      res.send(posts);
+      res.status(200).send(posts);
     } catch (error) {
       console.error(error);
+      next(error);
     }
   },
 
   async getById(req, res) {
     try {
       const post = await Post.findById(req.params._id);
-
       res.send(post);
     } catch (error) {
       console.error(error);
@@ -42,10 +61,8 @@ const PostController = {
       if (req.params.name.length > 20) {
         return res.status(400).send("Search too long");
       }
-
       const name = new RegExp(req.params.name, "i");
       const posts = await Post.find({ name });
-
       res.send(posts);
     } catch (error) {
       console.log(error);
@@ -54,12 +71,11 @@ const PostController = {
 
   async delete(req, res) {
     try {
-      const post = await Post.findByIdAndDelete(req.params._id);
-
-      res.send({ message: "Post deleted succesfully", post });
+      await Post.findByIdAndDelete(req.params._id);
+      await Comment.deleteMany({ postId: req.params._id });
+      res.send({ message: "Post deleted succesfully" });
     } catch (error) {
       console.error(error);
-
       res.status(500).send({ message: "Error trying to remove the post" });
     }
   },
@@ -69,7 +85,6 @@ const PostController = {
       const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
         new: true,
       });
-
       res.send({ message: "Post updated successfully!", post });
     } catch (error) {
       console.error(error);
@@ -110,7 +125,6 @@ const PostController = {
   async unlike(req, res) {
     try {
       let postToUnlike = await Post.findById(req.params._id);
-
       if (!postToUnlike)
         return res.status(400).send({ message: "Post not found" });
 
