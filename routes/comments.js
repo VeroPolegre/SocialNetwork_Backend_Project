@@ -8,6 +8,7 @@ const {
   isSuperAdmin,
 } = require("../middleware/authentication");
 
-router.post("/", authentication, CommentController.create);
+router.post("/:_id", authentication, CommentController.create);
+router.delete("/:_id", authentication, CommentController.delete);
 
 module.exports = router;

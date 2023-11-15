@@ -8,6 +8,7 @@ const CommentSchema = new mongoose.Schema(
       required: [true, "Please, enter text"],
     },
     userId: { type: ObjectId, ref: "User" },
+    postId: { type: ObjectId, ref: "Post" },
   },
   { timestamps: true }
 );
