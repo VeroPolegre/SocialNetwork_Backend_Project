@@ -16,5 +16,6 @@ router.get("/name/:name", authentication, PostController.getPostByName);
 router.get("/id/:_id", authentication, PostController.getById);
 router.get("/", authentication, PostController.getAll);
 router.put("/like/:_id", authentication, PostController.like);
+router.put("/unlike/:_id", authentication, PostController.unlike);
 
 module.exports = router;

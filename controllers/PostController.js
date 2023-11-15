@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 const PostController = {
   async create(req, res, next) {
@@ -77,23 +78,58 @@ const PostController = {
 
   async like(req, res) {
     try {
-      const foundPost = await Post.findById(req.params._id);
-      if (!foundPost)
+      const loggedUser = await User.findById(req.user._id);
+      let postToLike = await Post.findById(req.params._id);
+
+      if (!postToLike)
         return res.status(400).send({ message: "Post not found" });
 
-      const userId = req.user._id;
-      const alreadyLiked = foundPost.likes.includes(userId);
-
-      if (alreadyLiked) {
-        foundPost.likes.pull(userId);
+      if (postToLike.likes.includes(req.user._id)) {
+        return res.status(400).send({
+          message: `You already liked ${postToLike.userId}, post ${loggedUser.username}`,
+        });
       } else {
-        foundPost.likes.push(userId);
+        postToLike = await Post.findByIdAndUpdate(
+          req.params._id,
+          { $push: { likes: req.user._id } },
+          { new: true }
+        );
+        await User.findByIdAndUpdate(
+          req.user._id,
+          { $push: { likesList: req.params._id } },
+          { new: true }
+        );
+        res.send(postToLike);
       }
-      const updatedPost = await foundPost.save();
-      res.send(updatedPost);
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "There was a problem liking the post" });
+    }
+  },
+
+  async unlike(req, res) {
+    try {
+      let postToUnlike = await Post.findById(req.params._id);
+
+      if (!postToUnlike)
+        return res.status(400).send({ message: "Post not found" });
+
+      postToUnlike = await Post.findByIdAndUpdate(
+        req.params._id,
+        { $pull: { likes: req.user._id } },
+        { new: true }
+      );
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $pull: { likesList: req.params._id } },
+        { new: true }
+      );
+      res.send(postToUnlike);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem unliking the post" });
     }
   },
 };
