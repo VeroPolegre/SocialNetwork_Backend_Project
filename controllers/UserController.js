@@ -83,7 +83,9 @@ const UserController = {
       const loggedUser = await User.findById({ _id: req.user._id });
       const userToFollow = await User.findById({ _id: req.params._id });
       if (loggedUser.following.includes(userToFollow._id)) {
-        res.status(400).send({ msg: `already following ${userToFollow.username}` })
+        res
+          .status(400)
+          .send({ msg: `already following ${userToFollow.username}` });
       } else {
         await User.findByIdAndUpdate(
           req.user._id,
@@ -95,11 +97,17 @@ const UserController = {
           { $push: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
+        res
+          .status(200)
+          .send({
+            msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+            loggedUser,
+            userToFollow,
+          });
       }
     } catch (error) {
       console.error(error);
-      next(error)
+      next(error);
     }
   },
   async unFollow(req, res, next) {
@@ -107,7 +115,7 @@ const UserController = {
       const loggedUser = await User.findById({ _id: req.user._id });
       const userToFollow = await User.findById({ _id: req.params._id });
       if (!loggedUser.following.includes(userToFollow._id)) {
-        res.status(400).send({ msg: `not following ${userToFollow.username}` })
+        res.status(400).send({ msg: `not following ${userToFollow.username}` });
       } else {
         await User.findByIdAndUpdate(
           req.user._id,
@@ -119,11 +127,17 @@ const UserController = {
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
+        res
+          .status(200)
+          .send({
+            msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+            loggedUser,
+            userToFollow,
+          });
       }
     } catch (error) {
       console.error(error);
-      next(error)
+      next(error);
     }
   },
 };

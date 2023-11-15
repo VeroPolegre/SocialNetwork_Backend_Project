@@ -9,6 +9,13 @@ const PostController = {
         ...req.body,
         userId: req.user._id,
       });
+
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $push: { postIds: post._id } },
+        { new: true }
+      );
+
       res.status(201).send(post);
     } catch (error) {
       console.error(error);
@@ -16,15 +23,27 @@ const PostController = {
     }
   },
 
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
       const { page = 1, limit = 10 } = req.query;
-      const posts = await Post.find()
+      const posts = await Post.find({})
+        .populate({
+          path: "userId",
+          select: "username",
+        })
+        .populate({
+          path: "commentIds",
+          populate: {
+            path: "userId",
+            select: "username",
+          },
+        })
         .limit(limit)
         .skip((page - 1) * limit);
-      res.send(posts);
+      res.status(200).send(posts);
     } catch (error) {
       console.error(error);
+      next(error);
     }
   },
 

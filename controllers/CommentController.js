@@ -1,5 +1,7 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
+const User = require("../models/User");
+
 const CommentController = {
   async create(req, res, next) {
     try {
@@ -29,10 +31,74 @@ const CommentController = {
         { $pull: { commentIds: req.params._id } },
         { new: true }
       );
+
       res.status(200).send({ message: "Comment deleted succesfully." });
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Error trying to remove the comment" });
+    }
+  },
+
+  async like(req, res) {
+    try {
+      const loggedUser = await User.findById(req.user._id);
+      let commentToLike = await Comment.findById(req.params._id);
+
+      if (!commentToLike)
+        return res.status(400).send({ message: "Comment not found" });
+
+      if (commentToLike.likes.includes(req.user._id)) {
+        return res.status(400).send({
+          message: `You already liked this comment by ${commentToLike.userId}, comment ${loggedUser.username}`,
+        });
+      } else {
+        commentToLike = await Comment.findByIdAndUpdate(
+          req.params._id,
+          { $push: { likes: req.user._id } },
+          { new: true }
+        );
+
+        await User.findByIdAndUpdate(
+          req.user._id,
+          { $push: { likesList: req.params._id } },
+          { new: true }
+        );
+
+        res.send(commentToLike);
+      }
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem liking the comment" });
+    }
+  },
+
+  async unlike(req, res) {
+    try {
+      let commentToUnlike = await Comment.findById(req.params._id);
+
+      if (!commentToUnlike)
+        return res.status(400).send({ message: "Comment not found" });
+
+      commentToUnlike = await Comment.findByIdAndUpdate(
+        req.params._id,
+        { $pull: { likes: req.user._id } },
+        { new: true }
+      );
+
+      await User.findByIdAndUpdate(
+        req.user._id,
+        { $pull: { likesList: req.params._id } },
+        { new: true }
+      );
+
+      res.send(commentToUnlike);
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "There was a problem unliking the comment" });
     }
   },
 };
