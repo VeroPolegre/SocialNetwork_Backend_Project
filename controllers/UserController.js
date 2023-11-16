@@ -58,7 +58,11 @@ const UserController = {
   async getLoggedUser(req, res) {
     try {
       const loggedUser = await User.findById({ _id: req.user._id });
-      res.status(200).send(loggedUser);
+      const numOfFollowing = loggedUser.following.length;
+      const numOfFollowers = loggedUser.followers.length;
+      const numOfPosts = loggedUser.postIds.length;
+      const loggedUserInfo = { loggedUser, numOfFollowers, numOfFollowing, numOfPosts }
+      res.status(200).send(loggedUserInfo);
     } catch (error) {
       console.log(error);
       res.status(500).send(`Error while trying to get the current user`, error);
@@ -133,7 +137,7 @@ const UserController = {
         res
           .status(200)
           .send({
-            msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+            msg: `${loggedUser.username} is now following ${userToUnfollow.username}`,
             loggedUser,
             userToUnfollow,
           });
