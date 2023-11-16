@@ -1,7 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { jwt_secret } = require("../config/keys");
+require("dotenv").config();
+const jwt_secret = process.env.JWT_SECRET;
 
 const UserController = {
   async create(req, res, next) {
@@ -42,9 +43,9 @@ const UserController = {
     try {
       if (!req.user._id)
         return res.status(400).send({ msg: "Register user first" });
-      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body,
-        { new: true, }
-      );
+      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body, {
+        new: true,
+      });
       res
         .status(200)
         .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });
@@ -98,13 +99,11 @@ const UserController = {
           { $push: { followers: req.user._id } },
           { new: true }
         );
-        res
-          .status(200)
-          .send({
-            msg: `${loggedUser.username} is now following ${userToFollow.username}`,
-            loggedUser,
-            userToFollow,
-          });
+        res.status(200).send({
+          msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+          loggedUser,
+          userToFollow,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -117,7 +116,9 @@ const UserController = {
       let loggedUser = await User.findById({ _id: req.user._id });
       let userToUnfollow = await User.findById({ _id: req.params._id });
       if (!loggedUser.following.includes(userToUnfollow._id)) {
-        res.status(400).send({ msg: `You're not following ${userToUnfollow.username}` });
+        res
+          .status(400)
+          .send({ msg: `You're not following ${userToUnfollow.username}` });
       } else {
         loggedUser = await User.findByIdAndUpdate(
           req.user._id,
@@ -129,7 +130,13 @@ const UserController = {
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToUnfollow });
+        res
+          .status(200)
+          .send({
+            msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+            loggedUser,
+            userToUnfollow,
+          });
       }
     } catch (error) {
       console.error(error);
@@ -141,13 +148,13 @@ const UserController = {
     try {
       const foundUser = await User.findById({ _id: req.params._id });
       if (!foundUser) {
-        return res.status(400).send({ msg: `ID: ${req.params._id} not found` })
+        return res.status(400).send({ msg: `ID: ${req.params._id} not found` });
       } else {
         return res.status(200).send(foundUser);
       }
     } catch (error) {
       console.error(error);
-      next(error)
+      next(error);
     }
   },
   async getByName(req, res, next) {
@@ -155,13 +162,15 @@ const UserController = {
       const username = new RegExp(req.params.username, "i");
       const foundUser = await User.find({ username });
       if (!foundUser) {
-        return res.status(400).send({ msg: `${req.params.username} not found` })
+        return res
+          .status(400)
+          .send({ msg: `${req.params.username} not found` });
       } else {
         return res.status(200).send(foundUser);
-      };
+      }
     } catch (error) {
       console.error(error);
-      next(error)
+      next(error);
     }
   },
 };
