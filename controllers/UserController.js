@@ -42,9 +42,9 @@ const UserController = {
     try {
       if (!req.user._id)
         return res.status(400).send({ msg: "Register user first" });
-      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body, {
-        new: true,
-      });
+      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body,
+        { new: true, }
+      );
       res
         .status(200)
         .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });
@@ -129,7 +129,7 @@ const UserController = {
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToFollow });
+        res.status(200).send({ msg: `${loggedUser.username} is now following ${userToFollow.username}`, loggedUser, userToUnfollow });
       }
     } catch (error) {
       console.error(error);
@@ -137,6 +137,33 @@ const UserController = {
     }
   },
 
+  async getById(req, res, next) {
+    try {
+      const foundUser = await User.findById({ _id: req.params._id });
+      if (!foundUser) {
+        return res.status(400).send({ msg: `ID: ${req.params._id} not found` })
+      } else {
+        return res.status(200).send(foundUser);
+      }
+    } catch (error) {
+      console.error(error);
+      next(error)
+    }
+  },
+  async getByName(req, res, next) {
+    try {
+      const username = new RegExp(req.params.username, "i");
+      const foundUser = await User.find({ username });
+      if (!foundUser) {
+        return res.status(400).send({ msg: `${req.params.username} not found` })
+      } else {
+        return res.status(200).send(foundUser);
+      };
+    } catch (error) {
+      console.error(error);
+      next(error)
+    }
+  },
 };
 
 module.exports = UserController;
