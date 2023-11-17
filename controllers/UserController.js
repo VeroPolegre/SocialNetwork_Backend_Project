@@ -56,9 +56,20 @@ const UserController = {
     try {
       if (!req.user._id)
         return res.status(400).send({ msg: "Register user first" });
-      const foundUser = await User.findByIdAndUpdate(req.params._id, req.body, {
-        new: true,
-      });
+      let hash = "";
+      if (req.body.password) {
+        hash = bcrypt.hashSync(req.body.password, 10);
+      }
+      const foundUser = await User.findByIdAndUpdate(
+        req.params._id,
+        {
+          ...req.body,
+          password: hash,
+        },
+        {
+          new: true,
+        }
+      );
       res
         .status(200)
         .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });

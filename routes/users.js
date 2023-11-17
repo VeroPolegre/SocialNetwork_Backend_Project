@@ -9,12 +9,12 @@ const {
 
 router.post("/register", UserController.create);
 router.post("/login", UserController.login);
+router.put("/:_id", authentication, UserController.updateByID);
 router.get("/profile", authentication, UserController.getLoggedUser);
-router.get("/id/:_id", UserController.getById);
+router.get("/:_id", UserController.getById);
 router.get("/name/:username", UserController.getByName);
-router.put("/id/:_id", authentication, UserController.updateByID);
-router.delete("/logout", authentication, UserController.logout);
 router.put("/follow/:_id/", authentication, UserController.follow);
 router.put("/unfollow/:_id/", authentication, UserController.unFollow);
+router.delete("/logout", authentication, UserController.logout);
 
 module.exports = router;
