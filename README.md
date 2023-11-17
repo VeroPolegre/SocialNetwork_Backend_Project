@@ -72,6 +72,7 @@ Developed with JavaScript, leveraging Express, Mongosh, and Mongoose for seamles
 The system encompasses CRUD operations (Create, Read, Update, Delete). Our social network features various types of endpoints, some of which are highly specific and secure. To enhance security, we've integrated the "isAuthor" middleware. Rigorous testing of all endpoints using Postman was conducted before deploying to the Main branch, ensuring a robust and reliable system.
 
 Users:
+
     - Create a new user.
     - Login
     - Update by ID
@@ -82,6 +83,7 @@ Users:
     - Get by name
 
 Posts:
+
     - Create a new post.
     - Update a post.
     - Delete a post.
@@ -91,6 +93,7 @@ Posts:
     - Like/Unlike Post.
 
 Comments:
+
     - Creat a comment.
     - Delete a commet.
     - Like/Unlike a comment.
