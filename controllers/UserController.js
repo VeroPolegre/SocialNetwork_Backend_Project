@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.JWT_SECRET;
+const transporter = require("../config/nodemailer");
 
 const UserController = {
   async create(req, res, next) {
@@ -17,9 +18,34 @@ const UserController = {
         confirmed: false,
         role: "user",
       });
+      const emailToken = jwt.sign({ email: req.body.email }, jwt_secret, {
+        expiresIn: "48h",
+      });
+      const url = "http://localhost:8080/users/confirm/" + emailToken;
+      await transporter.sendMail({
+        to: req.body.email,
+        subject: "Please, confirm your email.",
+        html: `<h3>Welcome to Hunta!</h3>
+        <a href="${url}"> Please, click to confirm it your email</a>
+        `,
+      });
       res.status(201).send({ msg: "User created successfully.", user });
     } catch (error) {
       next(error);
+    }
+  },
+
+  async confirm(req, res) {
+    try {
+      const token = req.params.emailToken;
+      const payload = jwt.verify(token, jwt_secret);
+      await User.findOneAndUpdate(
+        { email: payload.email },
+        { confirmed: true }
+      );
+      res.status(201).send("User confirmed successfully!");
+    } catch (error) {
+      console.error(error);
     }
   },
 

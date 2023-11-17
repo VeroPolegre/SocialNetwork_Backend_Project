@@ -16,7 +16,10 @@ const handleTypeError = (error, request, response, next) => {
   } else if (error.code === 11000) {
     response.status(400).send("Email already in use");
   } else {
-    response.status(500).send("There was a problem", error);
+    // Use res.status(status).send(body) instead of res.send(status, body)
+    response
+      .status(500)
+      .send({ error: "There was a problem", details: error.message });
   }
 };
 
