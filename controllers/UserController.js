@@ -103,7 +103,9 @@ const UserController = {
       await User.findByIdAndUpdate(req.user._id, {
         $pull: { tokens: req.headers.authorization },
       });
-      res.status(200).send({ msg: `Disconnected, see you soon!` });
+      res
+        .status(200)
+        .send({ msg: `Disconnected, see you soon ${req.user.username}!` });
     } catch (error) {
       console.error(error);
       res.status(500).send({
