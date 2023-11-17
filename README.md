@@ -74,10 +74,9 @@ The system encompasses CRUD operations (Create, Read, Update, Delete). Our socia
 Users:
 
     - Create a new user.
-    - Login
+    - Login/Logout
     - Update by ID
     - Get loged user
-    - Logout
     - Follow/Unfollow user
     - Get by ID
     - Get by name
