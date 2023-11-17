@@ -25,7 +25,20 @@ const UserController = {
 
   async login(req, res) {
     try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res
+          .status(400)
+          .send({ error: "Please enter both email and password." });
+      }
       const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        return res.status(400).send({ message: "Incorrect user or password" });
+      }
+      const isMatch = await bcrypt.compare(req.body.password, user.password);
+      if (!isMatch) {
+        return res.status(400).send({ message: "Incorrect user or password" });
+      }
       const token = jwt.sign({ _id: user._id }, jwt_secret);
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
@@ -61,7 +74,12 @@ const UserController = {
       const numOfFollowing = loggedUser.following.length;
       const numOfFollowers = loggedUser.followers.length;
       const numOfPosts = loggedUser.postIds.length;
-      const loggedUserInfo = { loggedUser, numOfFollowers, numOfFollowing, numOfPosts }
+      const loggedUserInfo = {
+        loggedUser,
+        numOfFollowers,
+        numOfFollowing,
+        numOfPosts,
+      };
       res.status(200).send(loggedUserInfo);
     } catch (error) {
       console.log(error);
@@ -134,13 +152,11 @@ const UserController = {
           { $pull: { followers: req.user._id } },
           { new: true }
         );
-        res
-          .status(200)
-          .send({
-            msg: `${loggedUser.username} is now following ${userToUnfollow.username}`,
-            loggedUser,
-            userToUnfollow,
-          });
+        res.status(200).send({
+          msg: `${loggedUser.username} is now following ${userToUnfollow.username}`,
+          loggedUser,
+          userToUnfollow,
+        });
       }
     } catch (error) {
       console.error(error);
