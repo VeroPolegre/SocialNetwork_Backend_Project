@@ -16,6 +16,11 @@
   
 # <h2><samp> 💬 Introduction  </samp></h2>
 
+<p align="center">Welcome to Hunta!</p>
+  
+<p align="center">  A dynamic and collaborative social network designed to connect users in a seamless and secure online environment.</p> 
+  
+  <p align="center">Our development journey has been focused on creating a social network engaging with users, posts and comments with an emphasis on security, performance, and functionality. </p>
 
 # <h2><samp> ⚡ Objectives  </samp></h2>
 <samp>
@@ -69,38 +74,46 @@ Developed with JavaScript, leveraging Express, Mongosh, and Mongoose for seamles
 
 # <h2><samp> 🎯 Endpoints  </samp></h2>
 
-The system encompasses CRUD operations (Create, Read, Update, Delete). Our social network features various types of endpoints, some of which are highly specific and secure. To enhance security, we've integrated the "isAuthor" middleware. Rigorous testing of all endpoints using Postman was conducted before deploying to the Main branch, ensuring a robust and reliable system.
+The system encompasses CRUD operations (Create, Read, Update, Delete). Our social network Hunta features various types of endpoints, some of which are highly specific and secure. To enhance security, we've integrated the "isAuthor" besides the "isAdmin" and "isSuperAdmin" middleware. Rigorous testing of all endpoints using Postman was conducted before deploying to the Main branch, ensuring a robust and reliable system.
 
 Users:
 
-    - Create a new user.
-    - Login/Logout
+    - Register a new user
+    - Login
+    - Confirm email
     - Update by ID
-    - Get loged user
-    - Follow/Unfollow user
-    - Get by ID
+    - Get logged user (profile info)
+    - Get user by ID
     - Get by name
+    - Follow a user
+    - Unfollow a user
+    - Logout
 
 Posts:
 
-    - Create a new post.
-    - Update a post.
-    - Delete a post.
+    - Create a new post
+    - Update
+    - Delete
     - Get all posts.
-    - Get by ID.
-    - Get by Name.
-    - Like/Unlike Post.
+    - Get by ID
+    - Get by name
+    - Like a post
+    - Unlike a post
 
 Comments:
 
-    - Creat a comment.
-    - Delete a commet.
-    - Like/Unlike a comment.
+    - Create a new comment
+    - Delete
+    - Like a comment
+    - Unlike a comment
 
 
 # <h2><samp>👥 Working with branches </samp></h2>
 
 This project proved to be highly beneficial as it provided valuable insights into branch management and GitHub commands. Overcoming the occasional conflicts was a learning experience, and witnessing the project function seamlessly according to our initial vision was particularly gratifying.
+
+![branches](https://github.com/VeroPolegre/SocialNetwork_Backend_Project/assets/145065743/cb416b12-b166-4c82-8aa8-c4c18dd25878)
+
 
 ## <h2><samp>🤝 Contributing </samp></h2>
 
