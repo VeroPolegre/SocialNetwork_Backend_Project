@@ -10,11 +10,11 @@ const {
 } = require("../middleware/authentication");
 
 router.post("/", authentication, PostController.create);
-router.put("/id/:_id", authentication, isAuthor, PostController.update);
-router.delete("/id/:_id", authentication, isAuthor, PostController.delete);
-router.get("/name/:name", authentication, PostController.getPostByName);
-router.get("/id/:_id", authentication, PostController.getById);
-router.get("/", authentication, PostController.getAll);
+router.put("/:_id", authentication, isAuthor, PostController.update);
+router.delete("/:_id", authentication, isAuthor, PostController.delete);
+router.get("/", PostController.getAll);
+router.get("/:_id", PostController.getById);
+router.get("/name/:name", PostController.getByName);
 router.put("/like/:_id", authentication, PostController.like);
 router.put("/unlike/:_id", authentication, PostController.unlike);
 

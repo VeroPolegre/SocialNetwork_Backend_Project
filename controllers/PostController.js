@@ -23,6 +23,28 @@ const PostController = {
     }
   },
 
+  async update(req, res) {
+    try {
+      const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
+        new: true,
+      });
+      res.send({ message: "Post updated successfully!", post });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  async delete(req, res) {
+    try {
+      await Post.findByIdAndDelete(req.params._id);
+      await Comment.deleteMany({ postId: req.params._id });
+      res.send({ message: "Post deleted succesfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error trying to remove the post" });
+    }
+  },
+
   async getAll(req, res, next) {
     try {
       const { page = 1, limit = 10 } = req.query;
@@ -56,38 +78,16 @@ const PostController = {
     }
   },
 
-  async getPostByName(req, res) {
+  async getByName(req, res) {
     try {
       if (req.params.name.length > 20) {
         return res.status(400).send("Search too long");
       }
-      const name = new RegExp(req.params.name, "i");
-      const posts = await Post.find({ name });
+      const title = new RegExp(req.params.name, "i");
+      const posts = await Post.find({ title });
       res.send(posts);
     } catch (error) {
       console.log(error);
-    }
-  },
-
-  async delete(req, res) {
-    try {
-      await Post.findByIdAndDelete(req.params._id);
-      await Comment.deleteMany({ postId: req.params._id });
-      res.send({ message: "Post deleted succesfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send({ message: "Error trying to remove the post" });
-    }
-  },
-
-  async update(req, res) {
-    try {
-      const post = await Post.findByIdAndUpdate(req.params._id, req.body, {
-        new: true,
-      });
-      res.send({ message: "Post updated successfully!", post });
-    } catch (error) {
-      console.error(error);
     }
   },
 
