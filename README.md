@@ -94,7 +94,7 @@ Posts:
     - Create a new post
     - Update
     - Delete
-    - Get all posts.
+    - Get all posts
     - Get by ID
     - Get by name
     - Like a post
