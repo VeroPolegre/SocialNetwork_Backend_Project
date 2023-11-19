@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.JWT_SECRET;
 const transporter = require("../config/nodemailer");
+const fs = require("fs").promises;
 
 const UserController = {
   async create(req, res, next) {
@@ -15,6 +16,7 @@ const UserController = {
       const user = await User.create({
         ...req.body,
         password: hash,
+        avatar: req.file.filename,
         confirmed: false,
         role: "user",
       });
@@ -78,27 +80,34 @@ const UserController = {
     }
   },
 
-  async updateByID(req, res) {
+  async updateProfile(req, res) {
     try {
-      if (!req.user._id)
+      if (!req.user._id) {
         return res.status(400).send({ msg: "Register user first" });
-      let hash = "";
-      if (req.body.password) {
-        hash = bcrypt.hashSync(req.body.password, 10);
       }
-      const foundUser = await User.findByIdAndUpdate(
-        req.params._id,
-        {
-          ...req.body,
-          password: hash,
-        },
-        {
-          new: true,
+
+      let foundUser = await User.findById(req.user._id);
+
+      if (!foundUser) {
+        return res.status(400).send({ msg: "User not found" });
+      }
+      let updateFields = {};
+
+      if (req.file) {
+        if (foundUser.avatar) {
+          await fs.unlink(`uploads/${foundUser.avatar}`);
         }
-      );
-      res
-        .status(200)
-        .send({ msg: `Usuario ${foundUser.username} actualizado`, foundUser });
+        updateFields.avatar = req.file.filename;
+      }
+      if (req.body.password) {
+        updateFields.password = bcrypt.hashSync(req.body.password, 10);
+      }
+
+      foundUser = await User.findByIdAndUpdate(req.user._id, updateFields, {
+        new: true,
+      });
+
+      res.status(200).send({ msg: "User updated", foundUser });
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
@@ -148,7 +157,7 @@ const UserController = {
       if (loggedUser.following.includes(userToFollow._id)) {
         res
           .status(400)
-          .send({ msg: `already following ${userToFollow.username}` });
+          .send({ msg: `Already following ${userToFollow.username}` });
       } else {
         loggedUser = await User.findByIdAndUpdate(
           req.user._id,

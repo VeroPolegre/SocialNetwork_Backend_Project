@@ -8,8 +8,8 @@ const PostController = {
       const post = await Post.create({
         ...req.body,
         userId: req.user._id,
+        image: req.file.filename,
       });
-
       await User.findByIdAndUpdate(
         req.user._id,
         { $push: { postIds: post._id } },

@@ -8,6 +8,7 @@ const CommentController = {
       const comment = await Comment.create({
         ...req.body,
         userId: req.user._id,
+        image: req.file.filename,
       });
 
       await Post.findByIdAndUpdate(

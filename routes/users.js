@@ -6,12 +6,18 @@ const {
   isAdmin,
   isSuperAdmin,
 } = require("../middleware/authentication");
+const upload = require("../middleware/upload");
 
-router.post("/register", UserController.create);
+router.post("/register", upload.single("avatar"), UserController.create);
 router.post("/login", UserController.login);
 router.get("/confirm/:emailToken", UserController.confirm);
-router.put("/:_id", authentication, UserController.updateByID);
 router.get("/profile", authentication, UserController.getLoggedUser);
+router.put(
+  "/profile",
+  authentication,
+  upload.single("avatar"),
+  UserController.updateProfile
+);
 router.get("/:_id", UserController.getById);
 router.get("/name/:username", UserController.getByName);
 router.put("/follow/:_id/", authentication, UserController.follow);

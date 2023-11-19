@@ -1,8 +1,9 @@
 const User = require("../models/User");
+const Post = require("../models/Post");
+const Comment = require("../models/Comment");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const jwt_secret = process.env.JWT_SECRET;
-const Post = require("../models/Post");
 
 const authentication = async (req, res, next) => {
   try {
@@ -36,12 +37,13 @@ const isSuperAdmin = async (req, res, next) => {
   next();
 };
 
-const isAuthor = async (req, res, next) => {
+const isPostAuthor = async (req, res, next) => {
   try {
-    const post = await Post.findById(req.params._id); //may be body, if we use frontend to send the id
+    const post = await Post.findById(req.params._id);
     if (post.userId.toString() !== req.user._id.toString()) {
       return res.status(403).send({ msg: `Is not your post` });
     }
+
     next();
   } catch (error) {
     console.error(error);
@@ -51,4 +53,26 @@ const isAuthor = async (req, res, next) => {
   }
 };
 
-module.exports = { authentication, isAdmin, isSuperAdmin, isAuthor };
+const isCommentAuthor = async (req, res, next) => {
+  try {
+    const comment = await Comment.findById(req.params._id);
+    if (comment.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).send({ msg: `Is not your post` });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .send({ msg: "There was an error when checking the author of the post" });
+  }
+};
+
+module.exports = {
+  authentication,
+  isAdmin,
+  isSuperAdmin,
+  isPostAuthor,
+  isCommentAuthor,
+};

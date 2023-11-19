@@ -1,26 +1,25 @@
-const handleValidationErrors = (error, response) => {
+const handleValidationErrors = (error, res) => {
   const errors = Object.values(error.errors).map((element) => element.message);
 
   if (errors.length > 1) {
     const errorMessages = errors.join(" && ");
 
-    response.status(400).send({ messages: errorMessages });
+    res.status(400).send({ messages: errorMessages });
   } else {
-    response.status(400).send({ message: errors });
+    res.status(400).send({ message: errors });
   }
+  console.error("Validation Error:", error);
 };
 
-const handleTypeError = (error, request, response, next) => {
+const handleTypeError = (error, req, res, next) => {
   if (error.name === "ValidationError") {
-    handleValidationErrors(error, response);
+    handleValidationErrors(error, res);
   } else if (error.code === 11000) {
-    response.status(400).send("Email already in use");
+    res.status(400).send({ msg: "Email already in use", error: error.message });
   } else {
-    // Use res.status(status).send(body) instead of res.send(status, body)
-    response
-      .status(500)
-      .send({ error: "There was a problem", details: error.message });
+    res.status(500).send({ msg: "There was a problem", error: error.message });
   }
+  console.error("Unhandled Error:", error);
 };
 
 module.exports = { handleTypeError };

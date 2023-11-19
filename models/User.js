@@ -20,6 +20,9 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please, enter a password"],
     },
+    avatar: {
+      type: String,
+    },
     role: {
       type: String,
       default: "user",
@@ -39,8 +42,7 @@ UserSchema.methods.toJSON = function () {
   delete user.tokens;
   delete user.password;
   return user;
-}
-
+};
 
 const User = mongoose.model("User", UserSchema);
 
