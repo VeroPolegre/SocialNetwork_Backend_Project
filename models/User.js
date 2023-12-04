@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please, enter a password"],
     },
+    dob: {
+      type: Date,
+      required: [true, "Please, enter a date"],
+    },
     avatar: {
       type: String,
     },

@@ -31,7 +31,7 @@ const UserController = {
         <a href="${url}"> Please, click to confirm it your email</a>
         `,
       });
-      res.status(201).send({ msg: "User created successfully.", user });
+      res.status(201).send({ message: "User created successfully.", user });
     } catch (error) {
       next(error);
     }
@@ -71,7 +71,9 @@ const UserController = {
       if (user.tokens.length > 4) user.tokens.shift();
       user.tokens.push(token);
       await user.save();
-      return res.status(200).send({ msg: `Welcome ${user.username}`, token });
+      return res
+        .status(200)
+        .send({ message: `Welcome ${user.username}`, token });
     } catch (error) {
       console.log(error);
       res
@@ -83,13 +85,13 @@ const UserController = {
   async updateProfile(req, res) {
     try {
       if (!req.user._id) {
-        return res.status(400).send({ msg: "Register user first" });
+        return res.status(400).send({ message: "Register user first" });
       }
 
       let foundUser = await User.findById(req.user._id);
 
       if (!foundUser) {
-        return res.status(400).send({ msg: "User not found" });
+        return res.status(400).send({ message: "User not found" });
       }
       let updateFields = {};
 
@@ -107,7 +109,7 @@ const UserController = {
         new: true,
       });
 
-      res.status(200).send({ msg: "User updated", foundUser });
+      res.status(200).send({ message: "User updated", foundUser });
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
@@ -140,11 +142,11 @@ const UserController = {
       });
       res
         .status(200)
-        .send({ msg: `Disconnected, see you soon ${req.user.username}!` });
+        .send({ message: `Disconnected, see you soon ${req.user.username}!` });
     } catch (error) {
       console.error(error);
       res.status(500).send({
-        msg: `Error while trying to disconnect the current user`,
+        message: `Error while trying to disconnect the current user`,
         error,
       });
     }
@@ -157,7 +159,7 @@ const UserController = {
       if (loggedUser.following.includes(userToFollow._id)) {
         res
           .status(400)
-          .send({ msg: `Already following ${userToFollow.username}` });
+          .send({ message: `Already following ${userToFollow.username}` });
       } else {
         loggedUser = await User.findByIdAndUpdate(
           req.user._id,
@@ -170,7 +172,7 @@ const UserController = {
           { new: true }
         );
         res.status(200).send({
-          msg: `${loggedUser.username} is now following ${userToFollow.username}`,
+          message: `${loggedUser.username} is now following ${userToFollow.username}`,
           loggedUser,
           userToFollow,
         });
@@ -188,7 +190,7 @@ const UserController = {
       if (!loggedUser.following.includes(userToUnfollow._id)) {
         res
           .status(400)
-          .send({ msg: `You're not following ${userToUnfollow.username}` });
+          .send({ message: `You're not following ${userToUnfollow.username}` });
       } else {
         loggedUser = await User.findByIdAndUpdate(
           req.user._id,
@@ -201,7 +203,7 @@ const UserController = {
           { new: true }
         );
         res.status(200).send({
-          msg: `${loggedUser.username} is now following ${userToUnfollow.username}`,
+          message: `${loggedUser.username} is now following ${userToUnfollow.username}`,
           loggedUser,
           userToUnfollow,
         });
@@ -216,7 +218,9 @@ const UserController = {
     try {
       const foundUser = await User.findById({ _id: req.params._id });
       if (!foundUser) {
-        return res.status(400).send({ msg: `ID: ${req.params._id} not found` });
+        return res
+          .status(400)
+          .send({ message: `ID: ${req.params._id} not found` });
       } else {
         return res.status(200).send(foundUser);
       }
@@ -232,7 +236,7 @@ const UserController = {
       if (!foundUser) {
         return res
           .status(400)
-          .send({ msg: `${req.params.username} not found` });
+          .send({ message: `${req.params.username} not found` });
       } else {
         return res.status(200).send(foundUser);
       }

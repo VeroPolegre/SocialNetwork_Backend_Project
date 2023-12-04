@@ -14,10 +14,26 @@ const handleValidationErrors = (error, res) => {
 const handleTypeError = (error, req, res, next) => {
   if (error.name === "ValidationError") {
     handleValidationErrors(error, res);
-  } else if (error.code === 11000) {
-    res.status(400).send({ msg: "Email already in use", error: error.message });
+  } else if (
+    error.code === 11000 &&
+    error.keyPattern &&
+    error.keyPattern.username
+  ) {
+    res
+      .status(400)
+      .send({ message: "Username already in use", error: error.message });
+  } else if (
+    error.code === 11000 &&
+    error.keyPattern &&
+    error.keyPattern.email
+  ) {
+    res
+      .status(400)
+      .send({ message: "Email already in use", error: error.message });
   } else {
-    res.status(500).send({ msg: "There was a problem", error: error.message });
+    res
+      .status(500)
+      .send({ message: "There was a problem", error: error.message });
   }
   console.error("Unhandled Error:", error);
 };
