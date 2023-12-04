@@ -75,6 +75,7 @@ const PostController = {
       res.send(post);
     } catch (error) {
       console.error(error);
+      res.status(500).send({ message: "There was a problem getting the post" });
     }
   },
 
@@ -87,7 +88,8 @@ const PostController = {
       const posts = await Post.find({ title });
       res.send(posts);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      res.status(500).send({ message: "There was a problem getting the post" });
     }
   },
 
