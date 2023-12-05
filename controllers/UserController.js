@@ -13,10 +13,11 @@ const UserController = {
 			if (req.body.password) {
 				hash = bcrypt.hashSync(req.body.password, 10);
 			}
+
 			const user = await User.create({
 				...req.body,
 				password: hash,
-				avatar: req.file.filename,
+				avatar: req.file ? req.file.filename : "example_uploaded_img.png",
 				confirmed: false,
 				role: "user",
 			});
