@@ -58,7 +58,7 @@ const UserController = {
       if (!username || !password) {
         return res
           .status(400)
-          .send({ error: "Please enter both email and password." });
+          .send({ error: "Please enter both username and password." });
       }
       const user = await User.findOne({ username: req.body.username });
       if (!user) {
