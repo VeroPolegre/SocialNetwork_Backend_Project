@@ -53,13 +53,13 @@ const UserController = {
 
   async login(req, res) {
     try {
-      const { email, password } = req.body;
-      if (!email || !password) {
+      const { username, password } = req.body;
+      if (!username || !password) {
         return res
           .status(400)
           .send({ error: "Please enter both email and password." });
       }
-      const user = await User.findOne({ email: req.body.email });
+      const user = await User.findOne({ username: req.body.username });
       if (!user) {
         return res.status(400).send({ message: "Incorrect user or password" });
       }
@@ -75,7 +75,7 @@ const UserController = {
         .status(200)
         .send({ message: `Welcome ${user.username}`, token });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res
         .status(500)
         .send(`Error while trying to connect the current user`, error);
@@ -130,7 +130,7 @@ const UserController = {
       };
       res.status(200).send(loggedUserInfo);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).send(`Error while trying to get the current user`, error);
     }
   },
