@@ -15,6 +15,7 @@ router.post(
   upload.single("image"),
   CommentController.create
 );
+router.get("/", CommentController.getAll);
 router.delete(
   "/:_id",
   authentication,

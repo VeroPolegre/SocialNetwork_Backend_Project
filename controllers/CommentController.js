@@ -23,6 +23,16 @@ const CommentController = {
     }
   },
 
+  async getAll(req, res, next) {
+    try {
+      const comments = await Comment.find();
+      res.status(200).send(comments);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  },
+
   async delete(req, res) {
     try {
       await Comment.findByIdAndDelete(req.params._id);
