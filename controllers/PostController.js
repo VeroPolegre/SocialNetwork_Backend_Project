@@ -5,10 +5,11 @@ const Comment = require("../models/Comment");
 const PostController = {
 	async create(req, res, next) {
 		try {
+			const images = req.files.map((file) => file.filename);
 			const post = await Post.create({
 				...req.body,
 				userId: req.user._id,
-				images: req.file.filename,
+				images,
 			});
 			await User.findByIdAndUpdate(
 				req.user._id,
