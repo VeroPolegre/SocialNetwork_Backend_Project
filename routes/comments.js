@@ -9,12 +9,16 @@ const {
 } = require("../middleware/authentication");
 const upload = require("../middleware/upload");
 
+router.put("/:_id/like", authentication, CommentController.like);
+router.put("/:_id/unlike", authentication, CommentController.unlike);
+
 router.post(
   "/:_id",
   authentication,
   upload.single("image"),
   CommentController.create
 );
+
 router.get("/", CommentController.getAll);
 router.delete(
   "/:_id",
@@ -22,7 +26,5 @@ router.delete(
   isCommentAuthor,
   CommentController.delete
 );
-router.put("/like/:_id", authentication, CommentController.like);
-router.put("/unlike/:_id", authentication, CommentController.unlike);
 
 module.exports = router;
