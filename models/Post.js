@@ -3,6 +3,29 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const PostSchema = new mongoose.Schema(
 	{
+		category: {
+			type: String,
+			enum: [
+				"Illustration",
+				"Photography",
+				"Concept art",
+				"Art direction",
+				"Graphic design",
+				"Collage",
+				"AI",
+				"Fashion",
+				"UI/UX",
+				"Branding",
+				"Video / Film",
+				"Animation",
+				"3D",
+			],
+			required: [true, "Please, enter a category."],
+		},
+		images: {
+			type: [String],
+			required: [true, "Please, enter image"],
+		},
 		title: {
 			type: String,
 			required: [true, "Please, enter a title"],
@@ -10,10 +33,6 @@ const PostSchema = new mongoose.Schema(
 		content: {
 			type: String,
 			required: [true, "Please, enter content"],
-		},
-		images: {
-			type: [String],
-			required: [true, "Please, enter image"],
 		},
 		keywords: {
 			type: [String],
