@@ -6,10 +6,12 @@ const PostController = {
 	async create(req, res, next) {
 		try {
 			const images = req.files.map((file) => file.filename);
+			const keywords = req.body.keywords.split(", ");
 			const post = await Post.create({
 				...req.body,
 				userId: req.user._id,
 				images,
+				keywords,
 			});
 			await User.findByIdAndUpdate(
 				req.user._id,
