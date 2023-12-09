@@ -56,7 +56,7 @@ const PostController = {
 		try {
 			const { page = 1, limit = 10 } = req.query;
 			const posts = await Post.find({})
-				.populate({ path: "userId", select: "username" })
+				.populate({ path: "userId", select: "username avatar" })
 				.populate({
 					path: "commentIds",
 					populate: {
