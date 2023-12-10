@@ -79,7 +79,9 @@ const PostController = {
 			res.send(post);
 		} catch (error) {
 			console.error(error);
-			res.status(500).send({ message: "There was a problem getting the post" });
+			res
+				.status(500)
+				.send({ message: "There was a problem getting the post by id" });
 		}
 	},
 
@@ -93,7 +95,31 @@ const PostController = {
 			res.send(posts);
 		} catch (error) {
 			console.error(error);
-			res.status(500).send({ message: "There was a problem getting the post" });
+			res
+				.status(500)
+				.send({ message: "There was a problem getting the post by title" });
+		}
+	},
+
+	async getByKeywords(req, res) {
+		try {
+			const { keywords } = req.query;
+			if (!keywords) {
+				return res
+					.status(400)
+					.send({ error: "Please provide keywords for the search." });
+			}
+			const posts = await Post.find({
+				keywords: {
+					$in: keywords.split(","),
+				},
+			});
+			res.send(posts);
+		} catch (error) {
+			console.error(error);
+			res
+				.status(500)
+				.send({ message: "There was a problem getting posts with keywords" });
 		}
 	},
 
