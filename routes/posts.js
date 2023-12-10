@@ -19,6 +19,7 @@ router.post(
 router.put("/:_id", authentication, isPostAuthor, PostController.update);
 router.delete("/:_id", authentication, isPostAuthor, PostController.delete);
 router.get("/", PostController.getAll);
+router.get("/search", PostController.getByKeywords);
 router.get("/:_id", PostController.getById);
 router.get("/title/:title", PostController.getByTitle);
 router.put("/like/:_id", authentication, PostController.like);
