@@ -9,8 +9,8 @@ const {
 } = require("../middleware/authentication");
 const upload = require("../middleware/upload");
 
-router.put("/:_id/like", authentication, CommentController.like);
-router.put("/:_id/unlike", authentication, CommentController.unlike);
+router.put("/like/:_id", authentication, CommentController.like);
+router.put("/unlike/:_id", authentication, CommentController.unlike);
 
 router.post(
   "/:_id",
