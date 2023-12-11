@@ -107,7 +107,7 @@ const PostController = {
 			if (!keywords) {
 				return res
 					.status(400)
-					.send({ error: "Please provide keywords for the search." });
+					.send({ message: "Please provide keywords for the search." });
 			}
 			const posts = await Post.find({
 				keywords: {
