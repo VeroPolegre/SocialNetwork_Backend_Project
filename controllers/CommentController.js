@@ -5,10 +5,14 @@ const User = require("../models/User");
 const CommentController = {
   async create(req, res, next) {
     try {
+      let imageFileName;
+      if (req.file && req.file.filename) {
+        imageFileName = req.file.filename;
+      }
       const comment = await Comment.create({
         ...req.body,
         userId: req.user._id,
-        image: req.file.filename,
+        image: imageFileName,
       });
 
       await Post.findByIdAndUpdate(
@@ -25,7 +29,15 @@ const CommentController = {
 
   async getAll(req, res, next) {
     try {
-      const comments = await Comment.find();
+      const postId = req.params._id;
+      const post = await Post.findById(postId);
+
+      if (!post) {
+        return res.status(404).send({ message: "Post not found" });
+      }
+      const commentIds = post.commentIds;
+      const comments = await Comment.find({ _id: { $in: commentIds } });
+
       res.status(200).send(comments);
     } catch (error) {
       console.error(error);
