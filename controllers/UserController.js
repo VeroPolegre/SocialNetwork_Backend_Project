@@ -130,7 +130,8 @@ const UserController = {
 
   async getLoggedUser(req, res) {
     try {
-      const loggedUser = await User.findById({ _id: req.user._id });
+      const loggedUser = await User.findById({ _id: req.user._id })
+      .populate({path: "postIds", select: "category images title content keywords likes commentIds"})
       const numOfFollowing = loggedUser.following.length;
       const numOfFollowers = loggedUser.followers.length;
       const numOfPosts = loggedUser.postIds.length;
