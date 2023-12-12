@@ -19,7 +19,7 @@ router.post(
   CommentController.create
 );
 
-router.get("/:_id", CommentController.getAll);
+router.get("/:_id", CommentController.getAllByPostId);
 router.delete(
   "/:_id",
   authentication,

@@ -27,7 +27,7 @@ const CommentController = {
     }
   },
 
-  async getAll(req, res, next) {
+  async getAllByPostId(req, res, next) {
     try {
       const postId = req.params._id;
       const post = await Post.findById(postId);
@@ -38,7 +38,7 @@ const CommentController = {
       const commentIds = post.commentIds;
       const comments = await Comment.find({ _id: { $in: commentIds } });
 
-      res.status(200).send(comments);
+      res.status(200).send({ postId, comments });
     } catch (error) {
       console.error(error);
       next(error);
