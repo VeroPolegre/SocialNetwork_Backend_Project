@@ -54,7 +54,10 @@ const PostController = {
 
 	async getAll(req, res, next) {
 		try {
-			const { page = 1, limit = 10 } = req.query;
+			let { page, limit } = req.query;
+
+			limit = parseInt(limit, 10) || 3;
+
 			const posts = await Post.find({})
 				.populate({ path: "userId", select: "username avatar" })
 				.populate({
@@ -66,7 +69,12 @@ const PostController = {
 				})
 				.limit(limit)
 				.skip((page - 1) * limit);
-			res.status(200).send(posts);
+
+			const totalPostsCount = await Post.countDocuments();
+
+			const hasMorePages = totalPostsCount > page * limit;
+
+			res.status(200).send({ posts, hasMorePages });
 		} catch (error) {
 			console.error(error);
 			next(error);
