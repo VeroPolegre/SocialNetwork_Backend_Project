@@ -132,11 +132,9 @@ const PostController = {
 				return res.status(400).send({ message: "Post not found" });
 
 			if (postToLike.likes.includes(req.user._id)) {
-				return res
-					.status(400)
-					.send({
-						message: `You already liked ${postToLike.userId}, post ${loggedUser.username}`,
-					});
+				return res.status(400).send({
+					message: `You already liked ${postToLike.userId}, post ${loggedUser.username}`,
+				});
 			} else {
 				postToLike = await Post.findByIdAndUpdate(
 					req.params._id,
