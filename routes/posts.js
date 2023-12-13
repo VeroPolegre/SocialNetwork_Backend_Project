@@ -19,6 +19,7 @@ router.post(
 router.put("/:_id", authentication, isPostAuthor, PostController.update);
 router.delete("/:_id", authentication, isPostAuthor, PostController.delete);
 router.get("/", PostController.getAll);
+router.get("/followingPosts", PostController.getFollowingPosts);
 router.get("/explore", PostController.getByKeywords);
 router.get("/:_id", PostController.getById);
 router.get("/title/:title", PostController.getByTitle);
