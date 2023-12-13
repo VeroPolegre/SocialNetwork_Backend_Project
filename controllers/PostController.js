@@ -59,6 +59,7 @@ const PostController = {
 			limit = parseInt(limit, 10) || 3;
 
 			const posts = await Post.find({})
+				.sort({ createdAt: -1 })
 				.populate({ path: "userId", select: "username avatar" })
 				.populate({
 					path: "commentIds",
@@ -121,7 +122,7 @@ const PostController = {
 				keywords: {
 					$in: keywords.split(","),
 				},
-			});
+			}).sort({ createdAt: -1 });
 			res.send(posts);
 		} catch (error) {
 			console.error(error);
