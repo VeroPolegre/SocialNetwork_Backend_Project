@@ -59,6 +59,7 @@ const PostController = {
       limit = parseInt(limit, 10) || 3;
 
       const posts = await Post.find({})
+				.sort({ createdAt: -1 })
         .populate({ path: "userId", select: "username avatar" })
         .populate({
           path: "commentIds",
@@ -134,27 +135,27 @@ const PostController = {
     }
   },
 
-  async getByKeywords(req, res) {
-    try {
-      const { keywords } = req.query;
-      if (!keywords) {
-        return res
-          .status(400)
-          .send({ message: "Please provide keywords for the search." });
-      }
-      const posts = await Post.find({
-        keywords: {
-          $in: keywords.split(","),
-        },
-      });
-      res.send(posts);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .send({ message: "There was a problem getting posts with keywords" });
-    }
-  },
+	async getByKeywords(req, res) {
+		try {
+			const { keywords } = req.query;
+			if (!keywords) {
+				return res
+					.status(400)
+					.send({ message: "Please provide keywords for the search." });
+			}
+			const posts = await Post.find({
+				keywords: {
+					$in: keywords.split(","),
+				},
+			}).sort({ createdAt: -1 });
+			res.send(posts);
+		} catch (error) {
+			console.error(error);
+			res
+				.status(500)
+				.send({ message: "There was a problem getting posts with keywords" });
+		}
+	},
 
   async like(req, res) {
     try {
