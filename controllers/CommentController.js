@@ -36,7 +36,12 @@ const CommentController = {
         return res.status(404).send({ message: "Post not found" });
       }
       const commentIds = post.commentIds;
-      const comments = await Comment.find({ _id: { $in: commentIds } });
+      const comments = await Comment.find({
+        _id: { $in: commentIds },
+      }).populate({
+        path: "userId",
+        select: "username",
+      });
 
       res.status(200).send({ postId, comments });
     } catch (error) {
