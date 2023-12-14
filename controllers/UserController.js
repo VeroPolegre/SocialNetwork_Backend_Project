@@ -32,7 +32,7 @@ const UserController = {
 			await transporter.sendMail({
 				to: req.body.email,
 				subject: "Please, confirm your email.",
-				html: `<h3>Welcome to Hunta!</h3>
+				html: `<h3>Welcome to ARTICIPE!</h3>
         <a href="${url}"> Please, click to confirm it your email</a>
         `,
 			});
