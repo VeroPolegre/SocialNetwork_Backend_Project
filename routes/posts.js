@@ -9,13 +9,15 @@ const {
 	isPostAuthor,
 } = require("../middleware/authentication");
 const upload = require("../middleware/upload");
+const { handleUpload } = require("../config/cloudinary");
 
-router.post(
-	"/",
-	authentication,
-	upload.array("images", 10),
-	PostController.create
-);
+router.post("/", authentication, upload.array("images", 10));
+// router.post(
+// 	"/",
+// 	authentication,
+// 	upload.array("images", 10),
+// 	PostController.create
+// );
 router.put("/:_id", authentication, isPostAuthor, PostController.update);
 router.delete("/:_id", authentication, isPostAuthor, PostController.delete);
 router.get("/", PostController.getAll);

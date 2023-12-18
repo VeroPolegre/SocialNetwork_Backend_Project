@@ -5,15 +5,18 @@ const Comment = require("../models/Comment");
 const PostController = {
 	async create(req, res, next) {
 		try {
-			const images = req.files.map((file) => file.filename);
-			const keywords = req.body.keywords.split(", ");
-			const post = await Post.create({
-				...req.body,
-				userId: req.user,
-				images,
-				keywords,
-			});
-			await User.findByIdAndUpdate(
+			const cldResArray = await handleUpload(req.files);
+			const createdPosts = await Promise.all(
+				cldResArray.map(async (cldRes) => {
+					const keywords = req.body.keywords.split(", ");
+					const post = await Post.create({
+				  ...req.body,
+				  userId: req.user,
+				  cloudinaryUrl: cldRes.secure_url,
+				  keywords
+				});
+	  
+				await User.findByIdAndUpdate(
 				req.user._id,
 				{
 					$push: {
@@ -22,13 +25,15 @@ const PostController = {
 				},
 				{ new: true }
 			);
-
-			res.status(201).send(post);
+			return post;
+        })
+      );
+			return res.status(201).send(createdPosts);
 		} catch (error) {
 			console.error(error);
 			next(error);
 		}
-	},
+	},}
 
 	async update(req, res) {
 		try {

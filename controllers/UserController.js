@@ -1,7 +1,7 @@
+require("dotenv").config();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 const jwt_secret = process.env.JWT_SECRET;
 const transporter = require("../config/nodemailer");
 const fs = require("fs").promises;
